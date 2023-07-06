@@ -1,56 +1,38 @@
+import {Column, DataType, HasMany, HasOne, Model} from "sequelize-typescript";
+import {Order} from "./Order";
 import {Role} from "./Role";
-import {
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model
-} from 'sequelize';
-import db from "./index";
+import {OrderReturn} from "./OrderReturn";
+import {Token} from "./Token";
 
-export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-  declare id: CreationOptional<number>;
-  declare surname: string;
-  declare name: string;
-  declare email: string;
-  declare role: Role;
-  declare password: string;
+export class User extends Model {
 
-  declare readonly createdAt: CreationOptional<Date>;
-  declare readonly updatedAt: CreationOptional<Date>;
+  @Column(DataType.TEXT)
+  surname: string;
+
+  @Column(DataType.TEXT)
+  firstname: string;
+
+  @Column(DataType.TEXT)
+  email: string;
+
+  @Column({
+    type: DataType.ENUM(...Object.keys(Role)),
+    defaultValue: Role.CUSTOMER
+  })
+  role: Role;
+
+  @Column(DataType.TEXT)
+  password: string;
+
+  @Column(DataType.TEXT)
+  address: string;
+
+  @HasMany(() => Order, 'managerId')
+  ordersAsManager!: Order[];
+
+  @HasMany(() => Order, 'customerId')
+  ordersAsCustomer!: Order[];
+
+  @HasOne( () => Token)
+  token?: Token;
 }
-
-User.init({
-  id: {
-    type: DataTypes.INTEGER.UNSIGNED,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  surname: {
-    type: new DataTypes.STRING(128),
-    allowNull: false
-  },
-  name: {
-    type: new DataTypes.STRING(128),
-    allowNull: false
-  },
-  email: {
-    type: new DataTypes.STRING(128),
-    allowNull: false
-  },
-  role: {
-    type: DataTypes.ENUM(Role.ADMIN.toString(), Role.CUSTOMER.toString()),
-    allowNull: false
-  },
-  password: {
-    type: new DataTypes.STRING(128),
-    allowNull: false
-  },
-
-  createdAt: DataTypes.DATE,
-  updatedAt: DataTypes.DATE,
-}, {
-  sequelize: db.sequelize,
-  tableName: 'users',
-});
-

@@ -1,10 +1,19 @@
 import fs from 'fs';
 import path from 'path';
-import {DataTypes, Dialect, Sequelize} from 'sequelize';
+import {Sequelize} from 'sequelize-typescript';
 import {config} from "../../config/config";
+import {Dialect} from "sequelize";
 
 const basename = path.basename(__filename);
-const db: Record<string, any> = {};
+
+const fileNames = fs
+    .readdirSync(__dirname)
+    .filter((file: string) => {
+      return (file.indexOf('.') !== 0) &&
+          (file !== basename) &&
+          (file !== "AbstractEntity") &&
+          (file.slice(-3) === '.ts');
+    });
 
 let sequelize = new Sequelize(
     config.db.database,
@@ -13,32 +22,8 @@ let sequelize = new Sequelize(
     {
       dialect: config.db.dialect as Dialect,
       host: config.db.host,
-      username: config.db.username,
-      password: config.db.password,
-      database: config.db.database,
-      logging: config.db.logging
+      logging: config.db.logging,
+      models: fileNames,
     });
 
-const files = fs.readdirSync(__dirname).filter((file: string) => {
-  return (file.indexOf('.') !== 0) && (file !== basename) &&
-      (file.slice(-3) === '.ts');
-});
-
-Promise.all(
-    files.map(async (file: string) => {
-      const {default: model} = await import(path.join(__dirname, file));
-      db[model.name] = model(sequelize, DataTypes);
-    })
-)
-    .then(() => {
-      Object.keys(db).forEach(modelName => {
-        if (db[modelName].associate) {
-          db[modelName].associate(db);
-        }
-      })
-    });
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-export default db;
+export default sequelize;

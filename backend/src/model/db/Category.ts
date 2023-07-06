@@ -1,45 +1,48 @@
 import {
-  Association,
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model
-} from "sequelize";
-import db from "./index";
+  BelongsTo,
+  Column,
+  CreatedAt,
+  DataType,
+  DeletedAt,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+  Unique,
+  UpdatedAt
+} from "sequelize-typescript";
+import {CategoryCharacteristic} from "./CategoryCharacteristic";
+import {Photo} from "./Photo";
+import {Product} from "./Product";
 
-export class Category extends Model<InferAttributes<Category>, InferCreationAttributes<Category>> {
-  declare id: CreationOptional<number>;
-  declare name: string;
-  declare parent?: Category;
-  declare children?: Category[];
+@Table
+export class Category extends Model {
+  @Unique
+  @Column(DataType.TEXT)
+  name: string;
 
-  declare readonly createdAt: CreationOptional<Date>;
-  declare readonly updatedAt: CreationOptional<Date>;
+  @ForeignKey(() => Category)
+  @Column(DataType.INTEGER)
+  parentId!: number;
 
-  declare static associations: {
-    projects: Association<Category, Category>;
-  };
+  @BelongsTo(() => Category, 'parentId')
+  parent!: Category;
+
+  @HasMany(() => Category, 'parentId')
+  children!: Category[];
+
+  @HasMany(() => CategoryCharacteristic)
+  categoryCharacteristics!: CategoryCharacteristic[];
+
+  @CreatedAt
+  createdAt: Date;
+
+  @UpdatedAt
+  updatedAt: Date;
+
+  @DeletedAt
+  deletedAt: Date;
+
+  @HasMany(() => Product)
+  products: Product[];
 }
-
-Category.init(
-    {
-      id: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true
-      },
-      name: {
-        type: new DataTypes.STRING(128),
-        allowNull: false
-      },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-    },
-    {
-      sequelize: db.sequelize,
-      tableName: 'categories',
-      paranoid: true,
-    });
-
-Category.hasOne(Category)

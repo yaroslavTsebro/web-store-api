@@ -1,38 +1,30 @@
 import {
-  Association,
-  CreationOptional,
-  DataTypes,
-  InferAttributes,
-  InferCreationAttributes,
-  Model
-} from "sequelize";
-import db from "./index";
-import {Category} from "./Category";
+  Column,
+  CreatedAt,
+  DataType,
+  DeletedAt, HasMany,
+  Model,
+  Table,
+  Unique,
+  UpdatedAt
+} from "sequelize-typescript";
+import {CategoryCharacteristic} from "./CategoryCharacteristic";
 
-export class Characteristic extends Model<InferAttributes<Characteristic>, InferCreationAttributes<Characteristic>> {
-  declare id: CreationOptional<number>;
-  declare name: string;
+@Table
+export class Characteristic extends Model {
+  @Unique
+  @Column(DataType.TEXT)
+  name: string;
 
-  declare readonly createdAt: CreationOptional<Date>;
-  declare readonly updatedAt: CreationOptional<Date>;
+  @HasMany(() => CategoryCharacteristic)
+  categoryCharacteristics!: CategoryCharacteristic[];
+
+  @CreatedAt
+  createdAt: Date;
+
+  @UpdatedAt
+  updatedAt: Date;
+
+  @DeletedAt
+  deletedAt: Date;
 }
-
-Characteristic.init(
-    {
-      id: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true
-      },
-      name: {
-        type: new DataTypes.STRING(128),
-        allowNull: false
-      },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-    },
-    {
-      sequelize: db.sequelize,
-      tableName: 'characteristics',
-      paranoid: true,
-    });
