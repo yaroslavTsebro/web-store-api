@@ -5,12 +5,15 @@ import {
   DataType,
   DeletedAt,
   ForeignKey,
-  Model,
+  Model, Table,
   UpdatedAt
 } from "sequelize-typescript";
 import {CategoryCharacteristic} from "./CategoryCharacteristic";
 import {Product} from "./Product";
 
+@Table({
+  paranoid: true,
+})
 export class ProductCharacteristic extends Model {
   @ForeignKey(() => Product)
   @Column(DataType.INTEGER)
@@ -28,12 +31,6 @@ export class ProductCharacteristic extends Model {
 
   @Column(DataType.TEXT)
   value: string;
-
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
 
   @DeletedAt
   deletedAt: Date;

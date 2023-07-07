@@ -8,59 +8,95 @@ import {
   PaginationType
 } from "../base/crud/RPaginatingRepository";
 import {Op} from "sequelize";
+import {inject, injectable} from "inversify";
+import {TYPES} from "../../constant/types";
+import {ILogger} from "../../config/ILogger";
 
+@injectable()
 export class CompanyRepositoryImpl implements CompanyRepository {
-  create(dto: CreateCompany): Promise<Company> {
-    return Company.create({
-      name: dto.name,
-      countryId: dto.countryId
-    })
-  }
 
-  delete(id: number): Promise<number> {
-    return Company.destroy({
-      where: {id: id}
-    })
-  }
+  constructor(@inject(TYPES.Logger) private logger: ILogger) {}
 
-  findByPk(id: number): Promise<Company | null> {
-    return Company.findByPk(id)
-  }
-
-  update(dto: UpdateCompany): UpdateType<Company> {
-    const updateData: Partial<UpdateCompany> = {};
-
-    if (dto.countryId) {
-      updateData.countryId = dto.countryId;
+  async create(dto: CreateCompany): Promise<Company> {
+    try {
+      this.logger.info('creating started', dto);
+      return Company.create({
+        name: dto.name,
+        countryId: dto.countryId
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during creating', dto);
+      throw e;
     }
-
-    if (dto.name) {
-      updateData.name = dto.name;
-    }
-    return Company.update(updateData, {
-      where: {
-        id: dto.id,
-      },
-      returning: true
-    })
   }
 
-  findAllPagination(dto: PaginationSearchValue): PaginationType<Company> {
-    let whereOptions = {};
+  async delete(id: number): Promise<number> {
+    try {
+      this.logger.info('delete started', id);
+      return Company.destroy({
+        where: {id: id}
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during delete', id);
+      throw e;
+    }
+  }
 
-    if (dto.value) {
-      whereOptions = {
-        name: {
-          [Op.like]: `%${dto.value}%`,
-        },
+  async findByPk(id: number): Promise<Company | null> {
+    try {
+      this.logger.info('findByPk started', id);
+      return Company.findByPk(id)
+    } catch (e) {
+      this.logger.error('Error occurred during findByPk', id);
+      throw e;
+    }
+  }
+
+  async update(dto: UpdateCompany): UpdateType<Company> {
+    try {
+      this.logger.info('update started', dto);
+      const updateData: Partial<UpdateCompany> = {};
+
+      if (dto.countryId) {
+        updateData.countryId = dto.countryId;
       }
+
+      if (dto.name) {
+        updateData.name = dto.name;
+      }
+      return Company.update(updateData, {
+        where: {
+          id: dto.id,
+        },
+        returning: true
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during update', dto);
+      throw e;
     }
-    return Company.findAndCountAll(
-        {
-          ...dto.pagination,
-          where: whereOptions
-        }
-    )
   }
 
+  async findAllPagination(dto: PaginationSearchValue): PaginationType<Company> {
+    try {
+      this.logger.info('findAllPagination started', dto);
+      let whereOptions = {};
+
+      if (dto.value) {
+        whereOptions = {
+          name: {
+            [Op.like]: `%${dto.value}%`,
+          },
+        }
+      }
+      return Company.findAndCountAll(
+          {
+            ...dto.pagination,
+            where: whereOptions
+          }
+      )
+    } catch (e) {
+      this.logger.error('Error occurred during findAllPagination', dto);
+      throw e;
+    }
+  }
 }

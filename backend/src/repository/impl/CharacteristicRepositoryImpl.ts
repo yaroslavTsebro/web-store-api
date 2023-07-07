@@ -12,46 +12,83 @@ import {
   PaginationType
 } from "../base/crud/RPaginatingRepository";
 import {UpdateType} from "../base/crud/URepository";
+import {inject, injectable} from "inversify";
+import {TYPES} from "../../constant/types";
+import {ILogger} from "../../config/ILogger";
 
-class CharacteristicRepositoryImpl implements CharacteristicRepository {
-  create(dto: CreateCharacteristic): Promise<Characteristic> {
-    return Characteristic.create({name: dto.name});
-  }
+@injectable()
+export class CharacteristicRepositoryImpl implements CharacteristicRepository {
 
-  delete(id: number): Promise<number> {
-    return Characteristic.destroy({
-      where: {id: id}
-    });
-  }
+  constructor(@inject(TYPES.Logger) private logger: ILogger) {}
 
-  findAllPagination(dto: PaginationSearchValue): PaginationType<Characteristic> {
-    let whereOptions = {};
-
-    if (dto.value) {
-      whereOptions = {
-        name: {
-          [Op.like]: `%${dto.value}%`,
-        },
-      }
+  async create(dto: CreateCharacteristic): Promise<Characteristic> {
+    try {
+      this.logger.info('creating started', dto);
+      return Characteristic.create({name: dto.name});
+    } catch (e) {
+      this.logger.error('Error occurred during creating', dto);
+      throw e;
     }
-    return Characteristic.findAndCountAll(
-        {
-          ...dto.pagination,
-          where: whereOptions
+  }
+
+  async delete(id: number): Promise<number> {
+    try {
+      this.logger.info('deleting started', id);
+      return Characteristic.destroy({
+        where: {id: id}
+      });
+    } catch (e) {
+      this.logger.error('Error occurred during deleting', id);
+      throw e;
+    }
+  }
+
+  async findAllPagination(dto: PaginationSearchValue): PaginationType<Characteristic> {
+    try {
+      this.logger.info('findAllPagination started', dto);
+      let whereOptions = {};
+
+      if (dto.value) {
+        whereOptions = {
+          name: {
+            [Op.like]: `%${dto.value}%`,
+          },
         }
-    )
+      }
+      return Characteristic.findAndCountAll(
+          {
+            ...dto.pagination,
+            where: whereOptions
+          }
+      )
+    } catch (e) {
+      this.logger.error('Error occurred during findAllPagination', dto);
+      throw e;
+    }
   }
 
-  findByPk(id: number): Promise<Characteristic | null> {
-    return Characteristic.findByPk(id);
+  async findByPk(id: number): Promise<Characteristic | null> {
+    try {
+      this.logger.info('findByPk started', id);
+      return Characteristic.findByPk(id);
+    } catch (e) {
+      this.logger.error('Error occurred during findByPk', id);
+      throw e;
+    }
   }
 
-  update(dto: UpdateCharacteristic): UpdateType<Characteristic> {
-    return Characteristic.update({name: dto.name}, {
-      where: {
-        id: dto.id,
-      },
-      returning: true
-    })
+  async update(dto: UpdateCharacteristic): UpdateType<Characteristic> {
+    try {
+      this.logger.info('update started', dto);
+      return Characteristic.update({name: dto.name}, {
+        where: {
+          id: dto.id,
+        },
+        returning: true
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during update', dto);
+      throw e;
+    }
   }
 }

@@ -9,127 +9,165 @@ import {UpdateUser} from "../../model/dto/user/UpdateUser";
 import {UpdateType} from "../base/crud/URepository";
 import {Role} from "../../model/db/Role";
 import {Op} from "sequelize";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
+import {TYPES} from "../../constant/types";
+import {ILogger} from "../../config/ILogger";
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
-  create(dto: CreateUser): Promise<User> {
-    return User.create({
-      surname: dto.surname,
-      firstname: dto.firstname,
-      email: dto.email,
-      role: Role.CUSTOMER,
-      password: dto.password,
-      address: dto.address
-    });
-  }
 
-  createUser(dto: CreateUser): Promise<User> {
-    return User.create({
-      surname: dto.surname,
-      firstname: dto.firstname,
-      email: dto.email,
-      role: Role.CUSTOMER,
-      password: dto.password,
-      address: dto.address
-    });
-  }
+  constructor(@inject(TYPES.Logger) private logger: ILogger) {}
 
-  createAdmin(dto: CreateUser): Promise<User> {
-    return User.create({
-      surname: dto.surname,
-      firstname: dto.firstname,
-      email: dto.email,
-      role: Role.ADMIN,
-      password: dto.password,
-      address: dto.address
-    });
-  }
-
-  delete(id: number): Promise<number> {
-    return User.destroy({
-      where: {id: id}
-    })
-  }
-
-  findAllPagination(dto: PaginationSearchValue): PaginationType<User> {
-    let whereOptions = {};
-
-    if (dto.value) {
-      whereOptions = {
-        [Op.or]: [
-          {
-            surname: {
-              [Op.like]: `%${dto.value}%`,
-            },
-          },
-          {
-            firstname: {
-              [Op.like]: `%${dto.value}%`,
-            },
-          },
-          {
-            email: {
-              [Op.like]: `%${dto.value}%`,
-            },
-          },
-        ]
-      }
+  async create(dto: CreateUser): Promise<User> {
+    try {
+      this.logger.info('create started', dto);
+      return User.create({
+        surname: dto.surname,
+        firstname: dto.firstname,
+        email: dto.email,
+        role: Role.CUSTOMER,
+        password: dto.password,
+        address: dto.address
+      });
+    } catch (e) {
+      this.logger.error('Error occurred during create', dto);
+      throw e;
     }
-    return User.findAndCountAll(
-        {
-          ...dto.pagination,
-          where: whereOptions
+  }
+
+  async delete(id: number): Promise<number> {
+    try {
+      this.logger.info('delete started', id);
+      return User.destroy({
+        where: {id: id}
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during delete', id);
+      throw e;
+    }
+  }
+
+  async findAllPagination(dto: PaginationSearchValue): PaginationType<User> {
+    try {
+      this.logger.info('findAllPagination started', dto);
+      let whereOptions = {};
+
+      if (dto.value) {
+        whereOptions = {
+          [Op.or]: [
+            {
+              surname: {
+                [Op.like]: `%${dto.value}%`,
+              },
+            },
+            {
+              firstname: {
+                [Op.like]: `%${dto.value}%`,
+              },
+            },
+            {
+              email: {
+                [Op.like]: `%${dto.value}%`,
+              },
+            },
+          ]
         }
-    )
-  }
-
-  findByPk(id: number): Promise<User | null> {
-    return User.findByPk(id);
-  }
-
-  update(dto: UpdateUser): UpdateType<User> {
-    const updateData: Partial<UpdateUser> = {};
-
-    if (dto.surname) {
-      updateData.surname = dto.surname;
+      }
+      return User.findAndCountAll(
+          {
+            ...dto.pagination,
+            where: whereOptions
+          }
+      )
+    } catch (e) {
+      this.logger.error('Error occurred during findAllPagination', dto);
+      throw e;
     }
+  }
 
-    if (dto.firstname) {
-      updateData.firstname = dto.firstname;
+  async findByPk(id: number): Promise<User | null> {
+    try {
+      this.logger.info('findByPk started', id);
+      return User.findByPk(id);
+    } catch (e) {
+      this.logger.error('Error occurred during findByPk', id);
+      throw e;
     }
+  }
 
-    if (dto.address) {
-      updateData.address = dto.address;
+  async update(dto: UpdateUser): UpdateType<User> {
+    try {
+      this.logger.info('update started', dto);
+      const updateData: Partial<UpdateUser> = {};
+
+      if (dto.surname) {
+        updateData.surname = dto.surname;
+      }
+
+      if (dto.firstname) {
+        updateData.firstname = dto.firstname;
+      }
+
+      if (dto.address) {
+        updateData.address = dto.address;
+      }
+
+      return User.update(updateData, {
+        where: {
+          id: dto.id,
+        },
+        returning: true
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during update', dto);
+      throw e;
     }
-
-    return User.update(updateData, {
-      where: {
-        id: dto.id,
-      },
-      returning: true
-    })
   }
 
-  makeAdmin(id: number): UpdateType<User> {
-    return this.changeField(id, 'role', Role.ADMIN.toString());
+  async makeAdmin(id: number): UpdateType<User> {
+    try {
+      this.logger.info('makeAdmin started', id);
+      return this.changeField(id, 'role', Role.ADMIN.toString());
+    } catch (e) {
+      this.logger.error('Error occurred during makeAdmin', id);
+      throw e;
+    }
   }
 
-  changePassword(id: number, password: string): UpdateType<User> {
-    return this.changeField(id, 'password', password);
+  async changePassword(id: number, password: string): UpdateType<User> {
+    try {
+      this.logger.info('changePassword started', id, password);
+      return this.changeField(id, 'password', password);
+    } catch (e) {
+      this.logger.error('Error occurred during changePassword', id, password);
+      throw e;
+    }
   }
 
-  changeEmail(id: number, email: string): UpdateType<User> {
-    return this.changeField(id, 'email', email);
+  async changeEmail(id: number, email: string): UpdateType<User> {
+    try {
+      this.logger.info('changeEmail started', id, email);
+      return this.changeField(id, 'email', email);
+    } catch (e) {
+      this.logger.error('Error occurred during changeEmail', id, email);
+      throw e;
+    }
   }
 
-  changeField(id: number, field: string, value: string): UpdateType<User> {
-    return User.update({field: value}, {
-      where: {
-        id: id,
-      },
-      returning: true
-    })
+  async changeField(
+      id: number, field: string, value: string): UpdateType<User> {
+    try {
+      this.logger.info('changeField started', id, field, value);
+      return User.update({field: value}, {
+        where: {
+          id: id,
+        },
+        returning: true
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during changeField', id, field, value);
+      throw e;
+    }
   }
 
 }

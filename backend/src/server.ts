@@ -7,6 +7,7 @@ import {errorHandlerMiddleware} from "./middleware/errorHandlerMiddleware";
 import {DIContainer} from "./config/DIContainer";
 import {InversifyExpressServer} from "inversify-express-utils";
 import "./controller/UserController";
+import sequelize from "./model/db";
 
 export class Server {
   private PORT: number = config.server.port;
@@ -16,7 +17,6 @@ export class Server {
   constructor() {
     this.app = new DIContainer()
     this.httpServer = new InversifyExpressServer(this.app.diContainer);
-
     this.configureServer();
   }
 
@@ -29,12 +29,31 @@ export class Server {
       app.use(cookieParser());
       app.use(express.json());
       app.use(errorHandlerMiddleware);
-    })
+    });
+    this.runOrm();
+  }
+
+  private runOrm() {
+    sequelize
+        .authenticate()
+        .then(() => {
+          console.log('Connection has been established successfully.');
+        })
+        .catch((error) => {
+          console.error('Unable to connect to the database:', error);
+        });
+    sequelize.sync()
+        .then(() => {
+          console.log('Sync has been established successfully.');
+        })
+        .catch((error) => {
+          console.error('Unable to Sync the database:', error);
+        });
   }
 
   public async start() {
     this.httpServer.build().listen(this.PORT, () => {
-      const startUpMessage = `Server is working on ${this.PORT}`;
+      console.log(`Server is working on ${this.PORT}`);
     });
   }
 }

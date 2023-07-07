@@ -2,10 +2,10 @@ import {
   AllowNull,
   BelongsTo,
   Column,
-  DataType,
+  DataType, DeletedAt,
   ForeignKey,
   HasMany,
-  Model,
+  Model, Table,
   Unique
 } from "sequelize-typescript";
 import {Photo} from "./Photo";
@@ -14,6 +14,9 @@ import {Company} from "./Company";
 import {OrderItem} from "./OrderItem";
 import {ProductCharacteristic} from "./ProductCharacteristic";
 
+@Table({
+  paranoid: true,
+})
 export class Product extends Model {
   @Unique
   @Column(DataType.TEXT)
@@ -60,4 +63,7 @@ export class Product extends Model {
 
   @HasMany(() => ProductCharacteristic)
   productCharacteristics: ProductCharacteristic[];
+
+  @DeletedAt
+  deletedAt: Date;
 }

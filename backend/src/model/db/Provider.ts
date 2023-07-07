@@ -2,12 +2,15 @@ import {
   Column,
   CreatedAt,
   DataType, DeletedAt, HasMany,
-  Model,
+  Model, Table,
   Unique,
   UpdatedAt
 } from "sequelize-typescript";
 import {Order} from "./Order";
 
+@Table({
+  paranoid: true,
+})
 export class Provider extends Model{
   @Unique
   @Column(DataType.TEXT)
@@ -19,15 +22,9 @@ export class Provider extends Model{
   @Column(DataType.TEXT)
   email: string;
 
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
+  @HasMany(() => Order)
+  orders: Order[];
 
   @DeletedAt
   deletedAt: Date;
-
-  @HasMany(() => Order)
-  orders: Order[];
 }

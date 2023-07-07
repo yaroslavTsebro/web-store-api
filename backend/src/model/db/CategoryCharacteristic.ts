@@ -1,18 +1,17 @@
 import {
   BelongsTo,
   Column,
-  CreatedAt,
-  DataType,
-  DeletedAt,
+  DataType, DeletedAt,
   ForeignKey,
   Model,
-  Table,
-  UpdatedAt
+  Table
 } from "sequelize-typescript";
 import {Category} from "./Category";
 import {Characteristic} from "./Characteristic";
 
-@Table
+@Table({
+  paranoid: true,
+})
 export class CategoryCharacteristic extends Model {
   @ForeignKey(() => Category)
   @Column(DataType.INTEGER)
@@ -27,12 +26,6 @@ export class CategoryCharacteristic extends Model {
 
   @BelongsTo(() => Characteristic, 'characteristicId')
   characteristic: Characteristic;
-
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
 
   @DeletedAt
   deletedAt: Date;

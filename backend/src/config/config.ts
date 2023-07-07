@@ -30,7 +30,7 @@ export function getDbConfig() {
 export const config = {
   server: {
     port: Number(process.env.PORT) || ConfigValues.DEFAULT_PORT,
-    mock: Boolean(process.env.MOCK) || false,
+    mock: process.env.MOCK ? Boolean(process.env.MOCK) : false,
   },
   logger: {
     level: process.env.LOGGER_LEVEL || 'info',

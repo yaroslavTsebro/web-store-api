@@ -1,16 +1,16 @@
 import {
   Column,
-  CreatedAt,
-  DataType,
-  DeletedAt, HasMany,
+  DataType, DeletedAt,
+  HasMany,
   Model,
   Table,
-  Unique,
-  UpdatedAt
+  Unique
 } from "sequelize-typescript";
 import {CategoryCharacteristic} from "./CategoryCharacteristic";
 
-@Table
+@Table({
+  paranoid: true,
+})
 export class Characteristic extends Model {
   @Unique
   @Column(DataType.TEXT)
@@ -18,12 +18,6 @@ export class Characteristic extends Model {
 
   @HasMany(() => CategoryCharacteristic)
   categoryCharacteristics!: CategoryCharacteristic[];
-
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
 
   @DeletedAt
   deletedAt: Date;

@@ -1,21 +1,19 @@
 import {
   BelongsTo,
   Column,
-  CreatedAt,
-  DataType,
-  DeletedAt,
+  DataType, DeletedAt,
   ForeignKey,
   HasMany,
   Model,
   Table,
-  Unique,
-  UpdatedAt
+  Unique
 } from "sequelize-typescript";
 import {CategoryCharacteristic} from "./CategoryCharacteristic";
-import {Photo} from "./Photo";
 import {Product} from "./Product";
 
-@Table
+@Table({
+  paranoid: true,
+})
 export class Category extends Model {
   @Unique
   @Column(DataType.TEXT)
@@ -34,15 +32,9 @@ export class Category extends Model {
   @HasMany(() => CategoryCharacteristic)
   categoryCharacteristics!: CategoryCharacteristic[];
 
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
+  @HasMany(() => Product)
+  products: Product[];
 
   @DeletedAt
   deletedAt: Date;
-
-  @HasMany(() => Product)
-  products: Product[];
 }

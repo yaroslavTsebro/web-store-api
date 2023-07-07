@@ -8,60 +8,97 @@ import {
   PaginationSearchValue,
   PaginationType
 } from "../base/crud/RPaginatingRepository";
+import {inject, injectable} from "inversify";
+import {TYPES} from "../../constant/types";
+import {ILogger} from "../../config/ILogger";
 
-class CategoryRepositoryImpl implements CategoryRepository {
-  create(dto: CreateCategory): Promise<Category> {
-    if (dto.categoryId) {
-      return Category.create({name: dto.name, categoryId: dto.categoryId});
-    } else {
-      return Category.create({name: dto.name});
-    }
-  }
+@injectable()
+export class CategoryRepositoryImpl implements CategoryRepository {
 
-  delete(id: number): Promise<number> {
-    return Category.destroy({
-      where: {id: id}
-    })
-  }
+  constructor(@inject(TYPES.Logger) private logger: ILogger) {}
 
-  findByPk(id: number): Promise<Category | null> {
-    return Category.findByPk(id);
-  }
-
-  update(dto: UpdateCategory): UpdateType<Category> {
-    const updateData: Partial<UpdateCategory> = {};
-
-    if (dto.categoryId) {
-      updateData.categoryId = dto.categoryId;
-    }
-
-    if (dto.name) {
-      updateData.name = dto.name;
-    }
-    return Category.update(updateData, {
-      where: {
-        id: dto.id,
-      },
-      returning: true
-    })
-  }
-
-  findAllPagination(dto: PaginationSearchValue): PaginationType<Category> {
-    let whereOptions = {};
-
-    if (dto.value) {
-      whereOptions = {
-        name: {
-          [Op.like]: `%${dto.value}%`,
-        },
+  async create(dto: CreateCategory): Promise<Category> {
+    try {
+      this.logger.info('Creating started', dto)
+      if (dto.categoryId) {
+        return Category.create({name: dto.name, categoryId: dto.categoryId});
+      } else {
+        return Category.create({name: dto.name});
       }
+    } catch (e) {
+      this.logger.error('Error occurred during creating', dto);
+      throw e;
     }
-    return Category.findAndCountAll(
-        {
-          ...dto.pagination,
-          where: whereOptions
+  }
+
+  async delete(id: number): Promise<number> {
+    try {
+      this.logger.info('Deleting started')
+      return Category.destroy({
+        where: {id: id}
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during deleting', id);
+      throw e;
+    }
+  }
+
+  async findByPk(id: number): Promise<Category | null> {
+    try {
+      this.logger.info('findByPk started')
+      return Category.findByPk(id);
+    } catch (e) {
+      this.logger.error('Error occurred during findByPk', id);
+      throw e;
+    }
+  }
+
+  async update(dto: UpdateCategory): UpdateType<Category> {
+    try {
+      this.logger.info('updating started', dto)
+      const updateData: Partial<UpdateCategory> = {};
+
+      if (dto.categoryId) {
+        updateData.categoryId = dto.categoryId;
+      }
+
+      if (dto.name) {
+        updateData.name = dto.name;
+      }
+      return Category.update(updateData, {
+        where: {
+          id: dto.id,
+        },
+        returning: true
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during updating', dto);
+      throw e;
+    }
+  }
+
+  async findAllPagination(dto: PaginationSearchValue): PaginationType<Category> {
+    try {
+      this.logger.info('findAllPagination started', dto)
+      let whereOptions = {};
+
+      if (dto.value) {
+        whereOptions = {
+          name: {
+            [Op.like]: `%${dto.value}%`,
+          },
         }
-    )
+      }
+      return Category.findAndCountAll(
+          {
+            ...dto.pagination,
+            where: whereOptions
+          }
+      )
+    } catch (e) {
+      this.logger.error('Error occurred during findAllPagination', dto);
+      throw e;
+    }
   }
 
 }

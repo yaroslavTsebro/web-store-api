@@ -1,21 +1,25 @@
 import {
-  AllowNull, BelongsTo,
+  AllowNull,
+  BelongsTo,
   Column,
-  CreatedAt,
-  DataType, DeletedAt, ForeignKey, HasMany, HasOne,
+  DataType, DeletedAt,
+  ForeignKey,
+  HasMany,
+  HasOne,
   Model,
-  Unique,
-  UpdatedAt
+  Table
 } from "sequelize-typescript";
 import {OrderItem} from "./OrderItem";
-import {Category} from "./Category";
 import {User} from "./User";
 import {Provider} from "./Provider";
 import {OrderReturn} from "./OrderReturn";
 import {SendingOrReceiving} from "./SendingOrReceiving";
 import {OrderState} from "./OrderState";
 
-export class Order extends Model{
+@Table({
+  paranoid: true,
+})
+export class Order extends Model {
   @Column(DataType.TEXT)
   startDate: Date;
 
@@ -31,28 +35,27 @@ export class Order extends Model{
   manager: User;
 
   @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER, allowNull: true })
+  @Column({type: DataType.INTEGER, allowNull: true})
   customerId: number | null;
 
   @BelongsTo(() => User, 'customerId')
   customer: User | null;
 
   @ForeignKey(() => Provider)
-  @Column({ type: DataType.INTEGER, allowNull: true })
+  @Column({type: DataType.INTEGER, allowNull: true})
   providerId: number | null;
 
   @BelongsTo(() => Provider, 'providerId')
   provider: Provider | null;
 
   @Column({
-    type: DataType.ENUM(...Object.keys(SendingOrReceiving)),
+    type: DataType.ENUM(...Object.values(SendingOrReceiving)),
     defaultValue: SendingOrReceiving.SENDING
   })
   sendingOrReceiving: SendingOrReceiving;
 
-
   @Column({
-    type: DataType.ENUM(...Object.keys(OrderState)),
+    type: DataType.ENUM(...Object.values(OrderState)),
     defaultValue: OrderState.CART
   })
   condition: OrderState;
@@ -60,18 +63,12 @@ export class Order extends Model{
   @Column(DataType.TEXT)
   address: string;
 
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
-
-  @DeletedAt
-  deletedAt: Date;
-
   @HasMany(() => OrderItem)
   orderItems: OrderItem[];
 
-  @HasOne( () => OrderReturn)
+  @HasOne(() => OrderReturn)
   orderReturn?: OrderReturn;
+
+  @DeletedAt
+  deletedAt: Date;
 }

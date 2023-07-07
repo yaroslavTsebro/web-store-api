@@ -8,79 +8,115 @@ import {
   PaginationType
 } from "../base/crud/RPaginatingRepository";
 import {UpdateType} from "../base/crud/URepository";
+import {inject, injectable} from "inversify";
+import {TYPES} from "../../constant/types";
+import {ILogger} from "../../config/ILogger";
 
-class ProviderRepositoryImpl implements ProviderRepository {
+@injectable()
+export class ProviderRepositoryImpl implements ProviderRepository {
 
-  create(dto: CreateProvider): Promise<Provider> {
-    return Provider.create({
-      name: dto.name,
-      email: dto.email,
-      phoneNumber: dto.phoneNumber,
-    })
-  }
+  constructor(@inject(TYPES.Logger) private logger: ILogger) {}
 
-  delete(id: number): Promise<number> {
-    return Provider.destroy({
-      where: {id: id}
-    })
-  }
-
-  findAllPagination(dto: PaginationSearchValue): PaginationType<Provider> {
-    let whereOptions = {};
-
-    if (dto.value) {
-      whereOptions = {
-        [Op.or]: [
-          {
-            email: {
-              [Op.like]: `%${dto.value}%`,
-            },
-          },
-          {
-            name: {
-              [Op.like]: `%${dto.value}%`,
-            },
-          },
-          {
-            phoneNumber: {
-              [Op.like]: `%${dto.value}%`,
-            },
-          },
-        ]
-      }
+  async create(dto: CreateProvider): Promise<Provider> {
+    try {
+      this.logger.info('creating started', dto);
+      return Provider.create({
+        name: dto.name,
+        email: dto.email,
+        phoneNumber: dto.phoneNumber,
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during creating', dto);
+      throw e;
     }
-    return Provider.findAndCountAll(
-        {
-          ...dto.pagination,
-          where: whereOptions
+  }
+
+  async delete(id: number): Promise<number> {
+    try {
+      this.logger.info('delete started', id);
+      return Provider.destroy({
+        where: {id: id}
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during delete', id);
+      throw e;
+    }
+  }
+
+  async findAllPagination(dto: PaginationSearchValue): PaginationType<Provider> {
+    try {
+      this.logger.info('findAllPagination started', dto);
+      let whereOptions = {};
+
+      if (dto.value) {
+        whereOptions = {
+          [Op.or]: [
+            {
+              email: {
+                [Op.like]: `%${dto.value}%`,
+              },
+            },
+            {
+              name: {
+                [Op.like]: `%${dto.value}%`,
+              },
+            },
+            {
+              phoneNumber: {
+                [Op.like]: `%${dto.value}%`,
+              },
+            },
+          ]
         }
-    )
+      }
+      return Provider.findAndCountAll(
+          {
+            ...dto.pagination,
+            where: whereOptions
+          }
+      )
+    } catch (e) {
+      this.logger.error('Error occurred during findAllPagination', dto);
+      throw e;
+    }
   }
 
-  findByPk(id: number): Promise<Provider | null> {
-    return Provider.findByPk(id);
+  async findByPk(id: number): Promise<Provider | null> {
+    try {
+      this.logger.info('findByPk started', id);
+      return Provider.findByPk(id);
+    } catch (e) {
+      this.logger.error('Error occurred during findByPk', id);
+      throw e;
+    }
   }
 
-  update(dto: UpdateProvider): UpdateType<Provider> {
-    const updateData: Partial<UpdateProvider> = {};
+  async update(dto: UpdateProvider): UpdateType<Provider> {
+    try {
+      this.logger.info('update started', dto);
+      const updateData: Partial<UpdateProvider> = {};
 
-    if (dto.name) {
-      updateData.name = dto.name;
+      if (dto.name) {
+        updateData.name = dto.name;
+      }
+
+      if (dto.phoneNumber) {
+        updateData.phoneNumber = dto.phoneNumber;
+      }
+
+      if (dto.email) {
+        updateData.email = dto.email;
+      }
+
+      return Provider.update(updateData, {
+        where: {
+          id: dto.id,
+        },
+        returning: true
+      })
+    } catch (e) {
+      this.logger.error('Error occurred during update', dto);
+      throw e;
     }
-
-    if (dto.phoneNumber) {
-      updateData.phoneNumber = dto.phoneNumber;
-    }
-
-    if (dto.email) {
-      updateData.email = dto.email;
-    }
-
-    return Provider.update(updateData, {
-      where: {
-        id: dto.id,
-      },
-      returning: true
-    })
   }
 }

@@ -1,9 +1,19 @@
-import {Column, DataType, HasMany, HasOne, Model} from "sequelize-typescript";
+import {
+  Column,
+  DataType, DeletedAt,
+  HasMany,
+  HasOne,
+  Model,
+  Table
+} from "sequelize-typescript";
 import {Order} from "./Order";
 import {Role} from "./Role";
 import {OrderReturn} from "./OrderReturn";
 import {Token} from "./Token";
 
+@Table({
+  paranoid: true,
+})
 export class User extends Model {
 
   @Column(DataType.TEXT)
@@ -16,7 +26,7 @@ export class User extends Model {
   email: string;
 
   @Column({
-    type: DataType.ENUM(...Object.keys(Role)),
+    type: DataType.ENUM(...Object.values(Role)),
     defaultValue: Role.CUSTOMER
   })
   role: Role;
@@ -35,4 +45,7 @@ export class User extends Model {
 
   @HasOne( () => Token)
   token?: Token;
+
+  @DeletedAt
+  deletedAt: Date;
 }

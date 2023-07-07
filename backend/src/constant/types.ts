@@ -1,7 +1,19 @@
-const TYPES = {
+export const TYPES = {
   UserService: Symbol('UserService'),
-  UserRepository: Symbol('UserRepository'),
   Logger: Symbol('ILogger'),
-}
 
-export default TYPES;
+  CategoryCharacteristicRepository: Symbol('CategoryCharacteristicRepository'),
+  CategoryRepository: Symbol('CategoryRepository'),
+  CharacteristicRepository: Symbol('CharacteristicRepository'),
+  CompanyRepository: Symbol('CompanyRepository'),
+  CountryRepository: Symbol('CountryRepository'),
+  OrderItemRepository: Symbol('OrderItemRepository'),
+  OrderRepository: Symbol('OrderRepository'),
+  OrderReturnRepository: Symbol('OrderReturnRepository'),
+  PhotoRepository: Symbol('PhotoRepository'),
+  ProductCharacteristicRepository: Symbol('ProductCharacteristicRepository'),
+  ProductRepository: Symbol('ProductRepository'),
+  ProviderRepository: Symbol('ProviderRepository'),
+  TokenRepository: Symbol('TokenRepository'),
+  UserRepository: Symbol('UserRepository'),
+}

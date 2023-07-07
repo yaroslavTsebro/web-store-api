@@ -1,4 +1,4 @@
 export enum SendingOrReceiving {
-  SENDING,
-  RECEIVING
+  SENDING = "SENDING",
+  RECEIVING = "RECEIVING"
 }

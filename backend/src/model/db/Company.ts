@@ -4,7 +4,7 @@ import {
   CreatedAt,
   DataType,
   DeletedAt, ForeignKey, HasMany,
-  Model,
+  Model, Table,
   Unique,
   UpdatedAt
 } from "sequelize-typescript";
@@ -12,20 +12,14 @@ import {Category} from "./Category";
 import {Country} from "./Country";
 import {Product} from "./Product";
 
+@Table({
+  paranoid: true,
+})
 export class Company extends Model {
 
   @Unique
   @Column(DataType.TEXT)
   name: string;
-
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
-
-  @DeletedAt
-  deletedAt: Date;
 
   @ForeignKey(() => Country)
   @Column(DataType.INTEGER)
@@ -36,4 +30,7 @@ export class Company extends Model {
 
   @HasMany( ()=> Product)
   products: Product[]
+
+  @DeletedAt
+  deletedAt: Date;
 }

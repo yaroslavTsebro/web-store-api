@@ -1,9 +1,9 @@
 export enum OrderState {
-  CART,
-  NEW,
-  ACCEPTED,
-  DENIED,
-  IN_WAY,
-  TURNED_BACK,
-  COMPLETED
+  CART = "CART",
+  NEW = "NEW",
+  ACCEPTED = "ACCEPTED",
+  DENIED = "DENIED",
+  IN_WAY = "IN_WAY",
+  TURNED_BACK = "TURNED_BACK",
+  COMPLETED = "COMPLETED"
 }

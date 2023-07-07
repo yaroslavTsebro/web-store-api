@@ -5,12 +5,15 @@ import {
   DataType,
   DeletedAt,
   ForeignKey,
-  Model,
+  Model, Table,
   Unique,
   UpdatedAt
 } from "sequelize-typescript";
 import {Order} from "./Order";
 
+@Table({
+  paranoid: true,
+})
 export class OrderReturn extends Model {
 
   @ForeignKey(() => Order)
@@ -26,12 +29,6 @@ export class OrderReturn extends Model {
   @Unique
   @Column(DataType.TEXT)
   reason: string;
-
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
 
   @DeletedAt
   deletedAt: Date;

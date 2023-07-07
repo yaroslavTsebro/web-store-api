@@ -5,12 +5,15 @@ import {
   DataType,
   DeletedAt,
   ForeignKey,
-  Model,
+  Model, Table,
   Unique,
   UpdatedAt
 } from "sequelize-typescript";
 import {Product} from "./Product";
 
+@Table({
+  paranoid: true,
+})
 export class Photo extends Model {
   @ForeignKey(() => Product)
   @Column(DataType.INTEGER)
@@ -22,12 +25,6 @@ export class Photo extends Model {
   @Unique
   @Column(DataType.TEXT)
   name: string;
-
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
 
   @DeletedAt
   deletedAt: Date;

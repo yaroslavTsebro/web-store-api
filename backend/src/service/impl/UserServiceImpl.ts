@@ -2,7 +2,7 @@ import {UserService} from "../UserService";
 import {User} from "../../model/db/User";
 import {inject, injectable} from "inversify";
 import {UserRepository} from "../../repository/UserRepository";
-import TYPES from "../../constant/types";
+import {TYPES} from "../../constant/types";
 
 @injectable()
 export class UserServiceImpl implements UserService {

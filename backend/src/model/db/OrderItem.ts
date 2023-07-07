@@ -1,13 +1,16 @@
 import {
   BelongsTo,
   Column,
-  DataType,
+  DataType, DeletedAt,
   ForeignKey,
-  Model
+  Model, Table
 } from "sequelize-typescript";
 import {Order} from "./Order";
 import {Product} from "./Product";
 
+@Table({
+  paranoid: true,
+})
 export class OrderItem extends Model {
   @ForeignKey(() => Order)
   @Column(DataType.INTEGER)
@@ -31,4 +34,7 @@ export class OrderItem extends Model {
 
   @Column(DataType.INTEGER)
   price: number;
+
+  @DeletedAt
+  deletedAt: Date;
 }

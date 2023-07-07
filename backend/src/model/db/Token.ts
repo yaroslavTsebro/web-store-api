@@ -1,12 +1,15 @@
 import {
   BelongsTo,
   Column,
-  DataType,
+  DataType, DeletedAt,
   ForeignKey,
-  Model
+  Model, Table
 } from "sequelize-typescript";
 import {User} from "./User";
 
+@Table({
+  paranoid: true,
+})
 export class Token extends Model {
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
@@ -14,4 +17,7 @@ export class Token extends Model {
 
   @BelongsTo(() => User, 'userId')
   user: User;
+
+  @DeletedAt
+  deletedAt: Date;
 }
