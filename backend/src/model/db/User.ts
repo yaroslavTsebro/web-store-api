@@ -1,6 +1,7 @@
 import {
   Column,
-  DataType, DeletedAt,
+  DataType,
+  DeletedAt,
   HasMany,
   HasOne,
   Model,
@@ -8,8 +9,8 @@ import {
 } from "sequelize-typescript";
 import {Order} from "./Order";
 import {Role} from "./Role";
-import {OrderReturn} from "./OrderReturn";
 import {Token} from "./Token";
+import {OAuthProvider} from "./OAuthProvider";
 
 @Table({
   paranoid: true,
@@ -31,11 +32,20 @@ export class User extends Model {
   })
   role: Role;
 
-  @Column(DataType.TEXT)
-  password: string;
+  @Column({
+    type: DataType.ENUM(...Object.values(Role)),
+    defaultValue: OAuthProvider.GOOGLE
+  })
+  oAuthProvider: OAuthProvider| null;
 
   @Column(DataType.TEXT)
   address: string;
+
+  @Column(DataType.TEXT)
+  password: string | null;
+
+  @Column(DataType.TEXT)
+  oAuthId: string| null;
 
   @HasMany(() => Order, 'managerId')
   ordersAsManager!: Order[];
@@ -43,7 +53,7 @@ export class User extends Model {
   @HasMany(() => Order, 'customerId')
   ordersAsCustomer!: Order[];
 
-  @HasOne( () => Token)
+  @HasOne(() => Token)
   token?: Token;
 
   @DeletedAt

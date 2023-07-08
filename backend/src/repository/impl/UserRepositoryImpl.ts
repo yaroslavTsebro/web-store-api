@@ -12,6 +12,7 @@ import {Op} from "sequelize";
 import {inject, injectable} from "inversify";
 import {TYPES} from "../../constant/types";
 import {ILogger} from "../../config/ILogger";
+import {OAuthProvider} from "../../model/db/OAuthProvider";
 
 @injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -170,4 +171,19 @@ export class UserRepositoryImpl implements UserRepository {
     }
   }
 
+  async createFromGoogle(email: string, firstName: string, lastName: string, oAuthId: string): Promise<User>{
+    try{
+      return User.create({
+        email,
+        surname: lastName,
+        firstname: firstName,
+        role: Role.CUSTOMER,
+        oAuthId: oAuthId,
+        oAuthProvider: OAuthProvider.GOOGLE,
+      })
+    }catch (e) {
+      this.logger.error('Error occurred during createFromGoogle', email, firstName, lastName, oAuthId);
+      throw e;
+    }
+  }
 }

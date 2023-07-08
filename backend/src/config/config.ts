@@ -35,5 +35,14 @@ export const config = {
   logger: {
     level: process.env.LOGGER_LEVEL || 'info',
   },
+  oauth: {
+    google: {
+      clientId: process.env.OAUTH_GOOGLE_CLIENT_ID || 'fakeId',
+      clientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET || "fakeSecret",
+      accessType: process.env.OAUTH_GOOGLE_ACCESS_TYPE || "offline"
+    },
+    redirectUrl: process.env.REDIRECT_URI ||
+        'http://127.0.0.1:3000/auth/google/callback'
+  },
   db: getDbConfig(),
 }

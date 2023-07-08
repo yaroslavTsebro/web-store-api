@@ -1,5 +1,8 @@
+import {GoogleOAuthService} from "../service/oauth/GoogleOAuthService";
+
 export const TYPES = {
   UserService: Symbol('UserService'),
+  GoogleOAuthService: Symbol('GoogleOAuthService'),
   Logger: Symbol('ILogger'),
 
   CategoryCharacteristicRepository: Symbol('CategoryCharacteristicRepository'),
