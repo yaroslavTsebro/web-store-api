@@ -1,9 +1,12 @@
 import {GoogleOAuthService} from "../service/oauth/GoogleOAuthService";
+import {JwtUtils} from "../utils/JwtUtils";
 
 export const TYPES = {
   UserService: Symbol('UserService'),
   GoogleOAuthService: Symbol('GoogleOAuthService'),
   Logger: Symbol('ILogger'),
+
+  JwtUtils: Symbol('JwtUtils'),
 
   CategoryCharacteristicRepository: Symbol('CategoryCharacteristicRepository'),
   CategoryRepository: Symbol('CategoryRepository'),

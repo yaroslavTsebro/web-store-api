@@ -32,6 +32,13 @@ export const config = {
     port: Number(process.env.PORT) || ConfigValues.DEFAULT_PORT,
     mock: process.env.MOCK ? Boolean(process.env.MOCK) : false,
   },
+  jwt: {
+    accessSecret: process.env.ACCESS_SECRET || ConfigValues.DEFAULT_ACCESS_SECRET,
+    accessExpireDate: process.env.ACCESS_LIFESPAN || ConfigValues.DEFAULT_ACCESS_LIFESPAN,
+    refreshSecret: process.env.REFRESH_SECRET || ConfigValues.DEFAULT_REFRESH_SECRET,
+    refreshExpireDate: process.env.REFRESH_LIFESPAN || ConfigValues.DEFAULT_REFRESH_LIFESPAN,
+    refreshExpireDateForCookies: Number(process.env.DEFAULT_REFRESH_LIFESPAN_COOKIES) || ConfigValues.DEFAULT_REFRESH_LIFESPAN_COOKIES,
+  },
   logger: {
     level: process.env.LOGGER_LEVEL || 'info',
   },

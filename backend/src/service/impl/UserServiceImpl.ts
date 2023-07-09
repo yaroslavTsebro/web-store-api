@@ -8,7 +8,12 @@ import {
   GoogleOAuthProfileResponse,
   GoogleOAuthService
 } from "../oauth/GoogleOAuthService";
-import {tokens} from "../oauth/OAuthService";
+import {Tokens} from "../oauth/OAuthService";
+import {TokenRepository} from "../../repository/TokenRepository";
+import {JwtUtils} from "../../utils/JwtUtils";
+import {AppError} from "../../model/error/AppError";
+import {ErrorCodes} from "../../constant/ErrorCodes";
+import {ErrorMessages} from "../../constant/ErrorMessages";
 
 @injectable()
 export class UserServiceImpl implements UserService {
@@ -17,10 +22,21 @@ export class UserServiceImpl implements UserService {
       @inject(TYPES.UserRepository) private userRepository: UserRepository,
       @inject(
           TYPES.GoogleOAuthService) private googleOAuthService: GoogleOAuthService,
+      @inject(TYPES.JwtUtils) private jwtUtils: JwtUtils,
+      @inject(TYPES.TokenRepository) private tokenRepository: TokenRepository,
       @inject(TYPES.Logger) private logger: ILogger) {}
 
-  getProfile(): Promise<User> {
-    return Promise.resolve(undefined);
+  async getProfile(id: number): Promise<User> {
+    try {
+      const user = await this.userRepository.findByPk(id);
+      if (user) {
+        return user;
+      }
+      throw new AppError(ErrorCodes.DONT_HAVE_SUCH_ACC,
+          ErrorMessages.DONT_HAVE_SUCH_ACC);
+    } catch (e) {
+      throw e;
+    }
   }
 
   login(): Promise<User[]> {
@@ -31,8 +47,20 @@ export class UserServiceImpl implements UserService {
     return Promise.resolve([]);
   }
 
-  refresh(): Promise<User> {
-    return Promise.resolve(undefined);
+  async logoutGoogle(refreshToken: string): Promise<void> {
+    try {
+      await this.googleOAuthService.revokeTokens(refreshToken);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async refresh(refreshToken: string): Promise<Tokens> {
+    try {
+      return await this.googleOAuthService.refreshTokens(refreshToken);
+    } catch (e: any) {
+      throw e;
+    }
   }
 
   registration(): Promise<User[]> {
@@ -43,14 +71,17 @@ export class UserServiceImpl implements UserService {
     return "";
   }
 
-  async googleCallback(code: string): Promise<tokens> {
+  async googleCallback(code: string): Promise<Tokens> {
     try {
       const tokenResponse = await this.googleOAuthService.getTokenResponse(code)
       const {access_token, refresh_token, id_token} = tokenResponse;
+
       const profile: GoogleOAuthProfileResponse = await this.googleOAuthService
           .getProfile(access_token);
-      return await this.userRepository.createFromGoogle(profile.email,
+      const user = await this.userRepository.createFromGoogle(profile.email,
           profile.family_name, profile.given_name, profile.sub);
+
+      return await this.googleOAuthService.refreshTokens(access_token);
     } catch (e) {
       throw e;
     }

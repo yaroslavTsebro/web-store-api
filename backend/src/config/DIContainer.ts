@@ -34,6 +34,8 @@ import {
   ProviderRepositoryImpl
 } from "../repository/impl/ProviderRepositoryImpl";
 import {TokenRepositoryImpl} from "../repository/impl/TokenRepositoryImpl";
+import {JwtUtils} from "../utils/JwtUtils";
+import {JwtUtilsImpl} from "../utils/impl/JwtUtilsImpl";
 
 export class DIContainer {
   public diContainer: Container;
@@ -66,6 +68,10 @@ export class DIContainer {
     this.diContainer
         .bind<ILogger>(TYPES.Logger)
         .to(LoggerImpl)
+        .inSingletonScope();
+    this.diContainer
+        .bind<JwtUtils>(TYPES.JwtUtils)
+        .to(JwtUtilsImpl)
         .inSingletonScope();
   }
 

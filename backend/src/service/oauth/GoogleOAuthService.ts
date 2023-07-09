@@ -1,4 +1,4 @@
-import {OAuthService} from "./OAuthService";
+import {OAuthService, Tokens} from "./OAuthService";
 
 export type GoogleOAuthTokenResponse = {
   access_token: string,
@@ -17,4 +17,8 @@ export interface GoogleOAuthService extends OAuthService {
   getTokenResponse(code: string): Promise<GoogleOAuthTokenResponse>;
 
   getProfile(accessToken: string): Promise<GoogleOAuthProfileResponse>;
+
+  revokeTokens(accessToken: string): Promise<void>;
+
+  refreshTokens(refreshToken: string): Promise<Tokens>;
 }

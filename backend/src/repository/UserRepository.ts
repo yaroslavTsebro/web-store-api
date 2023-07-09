@@ -11,5 +11,6 @@ export interface UserRepository extends CUDRepository<User, CreateUser, UpdateUs
   changePassword(id: number, password: string): UpdateType<User>;
 
   changeEmail(id: number, email: string): UpdateType<User>;
+
   createFromGoogle(email: string, firstName: string, lastName: string, googleId: string): Promise<User>;
 }

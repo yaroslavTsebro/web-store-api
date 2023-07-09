@@ -2,6 +2,7 @@ export class GoogleOAuthConstants {
   public static readonly GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
   public static readonly GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
   public static readonly GOOGLE_PROFILE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
+  public static readonly GOOGLE_REVOKE_TOKEN_URL = 'https://oauth2.googleapis.com/revoke';
   public static readonly CLIENT_ID = "client_id";
   public static readonly REDIRECT_URI = "redirect_uri";
   public static readonly RESPONSE_TYPE = "response_type";

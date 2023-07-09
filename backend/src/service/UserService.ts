@@ -1,4 +1,5 @@
 import {User} from "../model/db/User";
+import {Tokens} from "./oauth/OAuthService";
 
 export interface UserService {
   registration(): Promise<User[]>;
@@ -7,13 +8,15 @@ export interface UserService {
 
   logout(): Promise<User[]>;
 
-  refresh(): Promise<User>;
+  refresh(refreshToken: string): Promise<Tokens>
 
-  getProfile(): Promise<User>;
+  // getProfile(): Promise<User>;
 
-  getProfile(): Promise<User>;
+  getProfile(id: number): Promise<User>
 
   getGoogleAuthUrl(): string;
 
-  googleCallback(code: string): void;
+  logoutGoogle(refreshToken: string): Promise<void>;
+
+  googleCallback(code: string): Promise<Tokens>;
 }
