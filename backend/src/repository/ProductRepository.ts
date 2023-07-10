@@ -7,6 +7,11 @@ import {
   RPaginatingAndSortingRepository
 } from "./base/crud/RPaginatingAndSortingRepository";
 
+/**
+ * Repository interface for managing products.
+ * @extends {CUDRepository<Product, CreateProduct, UpdateProduct>}
+ * @extends {RPaginatingAndSortingRepository<Product, SortingProduct>}
+ */
 export interface ProductRepository extends CUDRepository<Product, CreateProduct, UpdateProduct>,
     RPaginatingAndSortingRepository<Product, SortingProduct> {
 }

@@ -39,13 +39,6 @@ export class UserServiceImpl implements UserService {
     }
   }
 
-  login(): Promise<User[]> {
-    return Promise.resolve([]);
-  }
-
-  logout(): Promise<User[]> {
-    return Promise.resolve([]);
-  }
 
   async logoutGoogle(refreshToken: string): Promise<void> {
     try {
@@ -61,10 +54,6 @@ export class UserServiceImpl implements UserService {
     } catch (e: any) {
       throw e;
     }
-  }
-
-  registration(): Promise<User[]> {
-    return Promise.resolve([]);
   }
 
   getGoogleAuthUrl(): string {
@@ -85,6 +74,18 @@ export class UserServiceImpl implements UserService {
     } catch (e) {
       throw e;
     }
+  }
+
+  login(): Promise<User> {
+    return Promise.resolve(User);
+  }
+
+  logout(): Promise<User> {
+    return Promise.resolve(undefined);
+  }
+
+  registration(): Promise<User> {
+    return Promise.resolve(undefined);
   }
 }
 
