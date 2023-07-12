@@ -7,15 +7,13 @@ services:
       - 5432:5432
     environment:
       POSTGRES_DB: eshop
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: zsbldqpk56
+      POSTGRES_USER: passw
+      POSTGRES_PASSWORD: passw
   server:
-    image: node
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     depends_on:
       - postgres
-#    command: npm run start-not-build
-    build:
-      context: .
-      dockerfile: Dockerfile
