@@ -36,6 +36,10 @@ import {
 import {TokenRepositoryImpl} from "../repository/impl/TokenRepositoryImpl";
 import {JwtUtils} from "../utils/JwtUtils";
 import {JwtUtilsImpl} from "../utils/impl/JwtUtilsImpl";
+import {GoogleOAuthService} from "../service/oauth/GoogleOAuthService";
+import {
+  GoogleOAuthServiceImpl
+} from "../service/oauth/impl/GoogleOAuthServiceImpl";
 
 export class DIContainer {
   public diContainer: Container;
@@ -80,6 +84,10 @@ export class DIContainer {
         .bind<UserService>(TYPES.UserService)
         .to(UserServiceImpl)
         .inSingletonScope();
+    this.diContainer
+        .bind<GoogleOAuthService>(TYPES.GoogleOAuthService)
+        .to(GoogleOAuthServiceImpl)
+        .inSingletonScope();
   }
 
   private configureRepositories() {
@@ -87,10 +95,6 @@ export class DIContainer {
         .bind<CategoryCharacteristicRepositoryImpl>(
             TYPES.CategoryCharacteristicRepository)
         .to(CategoryCharacteristicRepositoryImpl)
-        .inSingletonScope();
-    this.diContainer
-        .bind<UserRepository>(TYPES.UserRepository)
-        .to(UserRepositoryImpl)
         .inSingletonScope();
     this.diContainer
         .bind<CategoryRepositoryImpl>(TYPES.CategoryRepository)

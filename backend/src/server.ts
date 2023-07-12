@@ -11,6 +11,7 @@ import sequelize from "./model/db";
 
 export class Server {
   private PORT: number = config.server.port;
+  private HOST = '0.0.0.0';
   private readonly app: DIContainer;
   private readonly httpServer: InversifyExpressServer;
 
@@ -52,7 +53,7 @@ export class Server {
   }
 
   public async start() {
-    this.httpServer.build().listen(this.PORT, () => {
+    this.httpServer.build().listen(this.PORT, this.HOST, () => {
       console.log(`Server is working on ${this.PORT}`);
     });
   }

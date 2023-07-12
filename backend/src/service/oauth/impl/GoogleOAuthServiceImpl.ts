@@ -8,7 +8,9 @@ import {GoogleOAuthConstants} from "../../../constant/GoogleOAuthConstants";
 import {config} from "../../../config/config";
 import qs from 'qs';
 import {Tokens} from "../OAuthService";
+import {injectable} from "inversify";
 
+@injectable()
 export class GoogleOAuthServiceImpl implements GoogleOAuthService {
   async getTokenResponse(code: string): Promise<GoogleOAuthTokenResponse> {
     try {

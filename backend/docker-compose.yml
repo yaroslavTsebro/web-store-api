@@ -1,0 +1,21 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: eshop
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: zsbldqpk56
+  server:
+    image: node
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+#    command: npm run start-not-build
+    build:
+      context: .
+      dockerfile: Dockerfile

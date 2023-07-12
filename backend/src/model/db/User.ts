@@ -11,6 +11,7 @@ import {Order} from "./Order";
 import {Role} from "./Role";
 import {Token} from "./Token";
 import {OAuthProvider} from "./OAuthProvider";
+import {SendingOrReceiving} from "./SendingOrReceiving";
 
 @Table({
   paranoid: true,
@@ -33,8 +34,8 @@ export class User extends Model {
   role: Role;
 
   @Column({
-    type: DataType.ENUM(...Object.values(Role)),
-    defaultValue: OAuthProvider.GOOGLE
+    type: DataType.ENUM(...Object.values(OAuthProvider)),
+    defaultValue: null
   })
   oAuthProvider: OAuthProvider| null;
 

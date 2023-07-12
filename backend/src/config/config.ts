@@ -19,11 +19,11 @@ dotenv.config({
 export function getDbConfig() {
   return {
     dialect: process.env.DB_DIALECT || "postgres",
-    host: process.env.DB_HOST || "localhost",
+    host: process.env.DB_HOST || "0.0.0.0",
     username: process.env.DB_USERNAME || "postgres",
     password: process.env.DB_PASSWORD || "zsbldqpk56",
     database: process.env.DB_NAME || "eshop",
-    logging: Boolean(process.env.DB_LOGGING) || true,
+    logging: Boolean(process.env.DB_LOGGING) || false,
   }
 }
 

@@ -14,6 +14,7 @@ import {JwtUtils} from "../../utils/JwtUtils";
 import {AppError} from "../../model/error/AppError";
 import {ErrorCodes} from "../../constant/ErrorCodes";
 import {ErrorMessages} from "../../constant/ErrorMessages";
+import {config} from "../../config/config";
 
 @injectable()
 export class UserServiceImpl implements UserService {
@@ -39,7 +40,6 @@ export class UserServiceImpl implements UserService {
     }
   }
 
-
   async logoutGoogle(refreshToken: string): Promise<void> {
     try {
       await this.googleOAuthService.revokeTokens(refreshToken);
@@ -57,7 +57,8 @@ export class UserServiceImpl implements UserService {
   }
 
   getGoogleAuthUrl(): string {
-    return "";
+    let url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.oauth.google.clientId}&redirect_uri=${config.oauth.redirectUrl}&response_type=code&scope=email%20profile&access_type=${config.oauth.google.accessType}`;
+    return url;
   }
 
   async googleCallback(code: string): Promise<Tokens> {
@@ -74,18 +75,6 @@ export class UserServiceImpl implements UserService {
     } catch (e) {
       throw e;
     }
-  }
-
-  login(): Promise<User> {
-    return Promise.resolve(User);
-  }
-
-  logout(): Promise<User> {
-    return Promise.resolve(undefined);
-  }
-
-  registration(): Promise<User> {
-    return Promise.resolve(undefined);
   }
 }
 

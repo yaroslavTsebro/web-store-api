@@ -1,12 +1,6 @@
 {
   "scripts": {
-    "start": "npx nodemon",
-    "start-not-build": "npx ts-node src/app.ts",
-    "dev": "nodemon src/app.ts",
-    "test": "jest",
-    "sequelize": "sequelize",
-    "db:migrate": "npm run sequelize -- db:migrate",
-    "db:seed": "npm run sequelize -- db:seed:all"
+    "start-not-build": "npx ts-node src/app.ts"
   },
   "dependencies": {
     "@types/axios": "^0.14.0",

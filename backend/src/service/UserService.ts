@@ -10,19 +10,19 @@ export interface UserService {
    * Registers a new user.
    * @returns {Promise<User>} - A promise that resolves to the registered user.
    */
-  registration(): Promise<User>;
+  // registration(): Promise<User>;
 
   /**
    * Logs in a user.
    * @returns {Promise<User>} - A promise that resolves to the logged-in user.
    */
-  login(): Promise<User>;
+  // login(): Promise<User>;
 
   /**
    * Logs out the current user.
    * @returns {Promise<User>} - A promise that resolves to the logged-out user.
    */
-  logout(): Promise<User>;
+  // logout(): Promise<User>;
 
   /**
    * Refreshes the access token using the provided refresh token.

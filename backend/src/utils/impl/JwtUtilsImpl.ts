@@ -2,8 +2,11 @@ import {config} from "../../config/config";
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import {Tokens} from "../../service/oauth/OAuthService";
 import {JwtUtils} from "../JwtUtils";
-export class JwtUtilsImpl implements JwtUtils{
-  public generateTokens(id: number, email: string):Tokens {
+import {injectable} from "inversify";
+
+@injectable()
+export class JwtUtilsImpl implements JwtUtils {
+  public generateTokens(id: number, email: string): Tokens {
     const accessToken: string = jwt.sign(
         {id, email},
         config.jwt.accessSecret,
